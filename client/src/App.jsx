@@ -1,4 +1,4 @@
-// App.jsx
+// App.jsx - Namma Oor Fix Implementation
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Landing from './Pages/Landing';
@@ -8,6 +8,18 @@ import Home from './Pages/Home';
 import Profile from './Pages/Profile';
 import Settings from './Pages/Settings';
 import Navbar from './Components/Navbar';
+// Namma Oor Fix Components
+import NammaOorFixLayout from './Components/NammaOorFixLayout';
+// CiviConnect Pages
+import ReportIssue from './Pages/ReportIssue';
+import MyIssues from './Pages/MyIssues';
+import IssueDetail from './Pages/IssueDetail';
+import PublicFeed from './Pages/PublicFeed';
+import Organizations from './Pages/Organizations';
+import Events from './Pages/Events';
+import AdminDashboard from './Pages/AdminDashboard';
+import AdminLogin from './Pages/AdminLogin';
+import OfficerLogin from './Pages/OfficerLogin';
 import './App.css';
 
 // Auth context to manage user state
@@ -57,7 +69,7 @@ function App() {
     <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
       <Router>
         <div className="App">
-         {/* {isAuthenticated && <Navbar user={user} />}  */}
+          {isAuthenticated && <Navbar user={user} />}
           <Routes>
             <Route 
               path="/" 
@@ -82,6 +94,60 @@ function App() {
             <Route 
               path="/settings" 
               element={isAuthenticated ? <Settings /> : <Navigate to="/login" />} 
+            />
+            {/* Namma Oor Fix Routes */}
+            <Route 
+              path="/" 
+              element={isAuthenticated ? <Navigate to="/user-view" /> : <Landing />} 
+            />
+            <Route 
+              path="/user-view" 
+              element={isAuthenticated ? <NammaOorFixLayout isOfficialView={false} /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/official-view" 
+              element={isAuthenticated && (user?.role === 'official' || user?.role === 'admin') ? <NammaOorFixLayout isOfficialView={true} /> : <Navigate to="/login" />} 
+            />
+            
+            {/* CiviConnect Routes */}
+            <Route 
+              path="/report" 
+              element={isAuthenticated ? <ReportIssue /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/my-issues" 
+              element={isAuthenticated ? <MyIssues /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/issue/:id" 
+              element={isAuthenticated ? <IssueDetail /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/feed" 
+              element={isAuthenticated ? <PublicFeed /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/organizations" 
+              element={isAuthenticated ? <Organizations /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/events" 
+              element={isAuthenticated ? <Events /> : <Navigate to="/login" />} 
+            />
+            {/* Officer Verification */}
+            <Route
+              path="/officer"
+              element={<OfficerLogin />}
+            />
+
+            {/* Admin Routes */}
+            <Route 
+              path="/admin" 
+              element={<AdminLogin />}
+            />
+            <Route 
+              path="/admin/dashboard" 
+              element={isAuthenticated && user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/admin" />} 
             />
           </Routes>
         </div>

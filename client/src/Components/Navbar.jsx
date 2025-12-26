@@ -1,52 +1,58 @@
-// Updated Navbar.jsx with logout functionality
+// Namma Oor Fix Header Component
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../App';
 
-export default function Navbar() {
-  const { user, logout } = useContext(AuthContext);
-
-  const handleLogout = () => {
-    logout();
-  };
+export default function Navbar({ isOfficialView = false }) {
+  const { user } = useContext(AuthContext);
 
   return (
-    <nav className="bg-white shadow-lg mb-6">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex justify-between">
-          <div className="flex space-x-7">
-            <Link to="/home" className="flex items-center py-4">
-              <span className="font-semibold text-gray-800 text-lg">CivicConnect</span>
-            </Link>
+    <header className="bg-white shadow-sm border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Namma Oor Fix Title */}
+          <div className="flex items-center">
+            <h1 className="text-2xl font-bold text-gray-800">Namma Oor Fix</h1>
+
+            {/* Main navigation */}
+            <nav className="hidden md:flex items-center space-x-6 ml-8">
+              <Link to="/user-view" className="text-gray-600 hover:text-red-600">Home</Link>
+              <Link to="/report" className="text-gray-600 hover:text-red-600">Report Issue</Link>
+              <Link to="/my-issues" className="text-gray-600 hover:text-red-600">My Issues</Link>
+              <Link to="/feed" className="text-gray-600 hover:text-red-600">Public Feed</Link>
+              <Link to="/organizations" className="text-gray-600 hover:text-red-600">Organizations</Link>
+              <Link to="/events" className="text-gray-600 hover:text-red-600">Events</Link>
+              <Link to="/profile" className="text-gray-600 hover:text-red-600">Profile</Link>
+              {user?.role === 'admin' && (
+                <Link to="/admin/dashboard" className="text-purple-700 hover:text-purple-600">Admin</Link>
+              )}
+            </nav>
           </div>
           
-          <div className="hidden md:flex items-center space-x-3">
-            <Link to="/home" className="py-4 px-2 text-gray-700 hover:text-red-600 transition duration-300">Home</Link>
-            <Link to="/profile" className="py-4 px-2 text-gray-700 hover:text-red-600 transition duration-300">Profile</Link>
-            <Link to="/settings" className="py-4 px-2 text-gray-700 hover:text-red-600 transition duration-300">Settings</Link>
-            
-            <div className="relative inline-block text-left dropdown ml-4">
-              <span className="rounded-md shadow-sm">
-                <button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white rounded-md hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800">
-                  <img 
-                    className="h-8 w-8 rounded-full object-cover mr-2" 
-                    src={`https://ui-avatars.com/api/?name=${user.name}&background=red&color=white`} 
-                    alt="Profile" 
-                  />
-                  {user.name}
-                </button>
-              </span>
+          {/* Search Bar - Only for Verified Officials View */}
+          {isOfficialView && (
+            <div className="flex-1 max-w-md mx-8">
+              <input
+                type="text"
+                placeholder="Search Posts..."
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
-            
-            <button 
-              onClick={handleLogout}
-              className="py-2 px-4 text-white bg-red-600 rounded hover:bg-red-700 transition duration-300"
-            >
-              Logout
-            </button>
+          )}
+          
+          {/* User Info */}
+          <div className="flex items-center space-x-3">
+            {user && (
+              <>
+                <span className="text-sm text-gray-600">{user.name}</span>
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
-    </nav>
+    </header>
   );
 }

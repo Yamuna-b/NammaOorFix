@@ -616,26 +616,141 @@ app.post('/admin/wards/seed', protect, requireAdmin, async (req, res) => {
     const result = await Ward.bulkWrite(toUpsert);
     res.json({ status: 'success', data: { upserted: result.upsertedCount || 0, modified: result.modifiedCount || 0 } });
   } catch (error) {
-    res.status(400).json({ status: 'error', message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   }
 });
 
-// Test and Health Endpoints
-app.get('/test', (req, res) => {
-  res.json({ message: 'Backend is working!' });
+// Admin: Update complaint status
+app.patch('/api/complaints/:id/status', protect, async (req, res) => {
+  try {
+    const { status, note, assignedDepartment, assignedOfficial } = req.body;
+    
+    // Check if user is admin or verified official
+    if (req.user.role !== 'admin' && (!req.user.isVerified || req.user.role !== 'official')) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Admin or verified official access required' 
+      });
+    }
+    
+    const issue = await Issue.findById(req.params.id);
+    if (!issue) {
+      return res.status(404).json({ success: false, message: 'Issue not found' });
+    }
+    
+    // Update status
+    if (status) issue.status = status;
+    if (assignedDepartment) issue.assignedDepartment = assignedDepartment;
+    if (assignedOfficial) issue.assignedOfficial = assignedOfficial;
+    
+    // Add timestamp for status changes
+    if (status === 'Acknowledged') issue.acknowledgedAt = new Date();
+    if (status === 'Resolved') issue.resolvedAt = new Date();
+    
+    // Add official reply if note provided
+    if (note) {
+      issue.officialReplies.push({
+        user: req.user.id,
+        text: note,
+        createdAt: new Date()
+      });
+    }
+    
+    await issue.save();
+    await issue.populate('assignedOfficial', 'name username department');
+    
+    res.json({
+      success: true,
+      message: 'Issue updated successfully',
+      data: { issue }
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ success: false, message: error.message });
+  }
 });
 
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'OK',
-    database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
-    timestamp: new Date().toISOString(),
-  });
+// Get issues
+app.get('/api/complaints', async (req, res) => {
+  try {
+    const {
+      status, 
+      category, 
+      wardNumber, 
+      page = 1, 
+      limit = 12, 
+      sort = 'recent' 
+    } = req.query;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    if (category) filter.category = category;
+    if (wardNumber) filter.wardNumber = wardNumber;
+    
+    let sortOptions = { createdAt: -1 };
+    if (sort === 'popular') {
+      sortOptions = { upvotes: -1 };
+    }
+    
+    const issues = await Issue.find(filter)
+      .populate('reportedBy', 'name username')
+      .populate('assignedOfficial', 'name username department')
+      .sort(sortOptions)
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+      
+    const total = await Issue.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        issues,
+        pagination: {
+          current: parseInt(page),
+          pages: Math.ceil(total / limit),
+          total
+        }
+      }
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
 });
 
-// Catch-all for React app
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+// Add comment to issue
+app.post('/api/complaints/:id/comments', protect, async (req, res) => {
+  try {
+    const { text } = req.body;
+    
+    if (!text || text.trim().length === 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Comment text is required' 
+      });
+    }
+    
+    const issue = await Issue.findById(req.params.id);
+    if (!issue) {
+      return res.status(404).json({ success: false, message: 'Issue not found' });
+    }
+    
+    issue.comments.push({
+      user: req.user.id,
+      text: text.trim(),
+      createdAt: new Date()
+    });
+    
+    await issue.save();
+    await issue.populate('comments.user', 'name username role');
+    
+    res.status(201).json({
+      success: true,
+      message: 'Comment added successfully',
+      data: { comment: issue.comments[issue.comments.length - 1] }
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
 });
 
 const PORT = process.env.PORT || 5000;
