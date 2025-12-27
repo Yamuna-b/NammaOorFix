@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -9,6 +9,7 @@ import {
 import IssueForm from "../Components/IssueForm";
 import IssueFeed from "../Components/IssueFeed";
 import Navbar from "../Components/Navbar";
+import { AuthContext } from "../App";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -50,7 +51,7 @@ function LocationSelector({ setSelectedLocation }) {
 export default function Home() {
   const [issues, setIssues] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [user] = useState({ name: "Swetha P", followers: 124, following: 87 });
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     fetch("http://localhost:5000/issues")

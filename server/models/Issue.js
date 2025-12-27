@@ -30,6 +30,7 @@ const issueSchema = new mongoose.Schema({
   }],
   assignedDepartment: { type: String },
   assignedOfficial: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  acknowledged: { type: Boolean, default: false },
   acknowledgedAt: { type: Date },
   resolutionEta: { type: Date },
   resolvedAt: { type: Date },

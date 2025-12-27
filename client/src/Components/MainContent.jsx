@@ -51,7 +51,7 @@ function LocationSelector({ onLocationSelect }) {
   return null;
 }
 
-export default function MainContent({ issues, loading }) {
+export default function MainContent({ issues, loading, userLocation, calculateLocationScore }) {
   const [votes, setVotes] = useState({});
   const [comments, setComments] = useState([
     { id: 1, user: 'Mdu Corp', text: 'This issue will be resolved soon', votes: 4000, userVote: null }

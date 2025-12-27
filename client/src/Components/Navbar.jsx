@@ -12,7 +12,7 @@ export default function Navbar({ isOfficialView = false }) {
         <div className="flex items-center justify-between">
           {/* Namma Oor Fix Title */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-gray-800">Namma Oor Fix</h1>
+            <h1 className="text-2xl font-bold text-gray-800">NammaOorFix</h1>
 
             {/* Main navigation */}
             <nav className="hidden md:flex items-center space-x-6 ml-8">

@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default function IssueFeed() {
+export default function IssueFeed({ userLocation, calculateLocationScore }) {
   const [issues, setIssues] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -91,11 +91,16 @@ export default function IssueFeed() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {issues.map((issue) => (
-            <ErrorBoundary key={issue._id}>
-              <IssueCard issue={issue} />
-            </ErrorBoundary>
-          ))}
+          {issues.map((issue) => {
+            const isLocal = userLocation && calculateLocationScore ? 
+              calculateLocationScore(issue, userLocation) > 0.5 : false;
+            
+            return (
+              <ErrorBoundary key={issue._id}>
+                <IssueCard issue={issue} isLocal={isLocal} />
+              </ErrorBoundary>
+            );
+          })}
         </div>
       )}
 

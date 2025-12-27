@@ -1,7 +1,6 @@
 // App.jsx - Namma Oor Fix Implementation
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Landing from './Pages/Landing';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import Home from './Pages/Home';
@@ -73,15 +72,15 @@ function App() {
           <Routes>
             <Route 
               path="/" 
-              element={isAuthenticated ? <Navigate to="/home" /> : <Landing />} 
+              element={isAuthenticated ? <Navigate to="/user-view" /> : <Navigate to="/login" />} 
             />
             <Route 
               path="/login" 
-              element={isAuthenticated ? <Navigate to="/home" /> : <Login />} 
+              element={isAuthenticated ? <Navigate to="/user-view" /> : <Login />} 
             />
             <Route 
               path="/register" 
-              element={isAuthenticated ? <Navigate to="/home" /> : <Register />} 
+              element={isAuthenticated ? <Navigate to="/user-view" /> : <Register />} 
             />
             <Route 
               path="/home" 
@@ -96,10 +95,6 @@ function App() {
               element={isAuthenticated ? <Settings /> : <Navigate to="/login" />} 
             />
             {/* Namma Oor Fix Routes */}
-            <Route 
-              path="/" 
-              element={isAuthenticated ? <Navigate to="/user-view" /> : <Landing />} 
-            />
             <Route 
               path="/user-view" 
               element={isAuthenticated ? <NammaOorFixLayout isOfficialView={false} /> : <Navigate to="/login" />} 

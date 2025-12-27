@@ -72,6 +72,40 @@ router.post('/:id/comment', async (req, res) => {
   res.json({ ...issue._doc, urgencyScore: calculateUrgencyScore(issue) });
 });
 
+router.post('/:id/acknowledge', async (req, res) => {
+  const issue = await Issue.findById(req.params.id);
+  issue.acknowledged = true;
+  issue.acknowledgedAt = new Date();
+  await issue.save();
+  res.json({ ...issue._doc, urgencyScore: calculateUrgencyScore(issue) });
+});
+
+// Location-based filtering endpoint
+router.get('/nearby', async (req, res) => {
+  try {
+    const { area, wardNumber, zone } = req.query;
+    let query = {};
+    
+    if (area) {
+      query['location.address'] = new RegExp(area, 'i');
+    }
+    if (wardNumber) {
+      query['wardNumber'] = wardNumber;
+    }
+    if (zone) {
+      query['zone'] = zone;
+    }
+
+    const issues = await Issue.find(query)
+      .sort({ createdAt: -1 })
+      .limit(50);
+      
+    res.json({ success: true, data: issues });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 function calculateUrgencyScore(issue) {
   const now = new Date();
   const ageInHours = (now - new Date(issue.createdAt)) / (1000 * 60 * 60);

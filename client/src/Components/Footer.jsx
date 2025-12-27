@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="text-center">
           <p className="text-gray-600 text-sm">Footer</p>
           <p className="text-gray-500 text-xs mt-2">
-            © 2024 Namma Oor Fix. All rights reserved.
+            © 2024 NammaOorFix. All rights reserved.
           </p>
         </div>
       </div>
