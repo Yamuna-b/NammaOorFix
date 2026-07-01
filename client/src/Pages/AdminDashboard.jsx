@@ -392,7 +392,7 @@ export default function AdminDashboard() {
                   >
                     <option value="">Select Department</option>
                     <option value="EB">Electricity Board</option>
-                    <option value="Municipal Corporation">Municipal Corporation</option>
+                    <option value="Madurai Corp">Madurai Corp</option>
                     <option value="PWD">Public Works Department</option>
                     <option value="Water Supply">Water Supply</option>
                     <option value="Health">Health</option>

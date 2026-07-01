@@ -106,5 +106,5 @@ graph TD
 Use these pre-seeded accounts to explore the portal:
 * **Citizen User:** `anya@example.com` / `Password123`
 * **EB Support Officer:** `eb@nammaoorfix.gov.in` / `Password123`
-* **Municipal Corp Officer:** `corp@nammaoorfix.gov.in` / `Password123`
+* **Madurai Corp Officer:** `corp@nammaoorfix.gov.in` / `Password123`
 * **System Admin:** `admin@nammaoorfix.gov.in` / `Admin123`

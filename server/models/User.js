@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: [
       'EB',
-      'Municipal Corporation',
+      'Madurai Corp',
       'PWD',
       'Water Supply',
       'Health',

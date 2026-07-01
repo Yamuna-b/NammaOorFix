@@ -12,6 +12,18 @@ export default function Login() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const demoAccounts = [
+    { label: 'Citizen User', email: 'anya@example.com', password: 'Password123', bg: 'bg-green-500/20 hover:bg-green-500/30' },
+    { label: 'EB Support Officer', email: 'eb@nammaoorfix.gov.in', password: 'Password123', bg: 'bg-blue-500/20 hover:bg-blue-500/30' },
+    { label: 'Madurai Corp Officer', email: 'corp@nammaoorfix.gov.in', password: 'Password123', bg: 'bg-amber-500/20 hover:bg-amber-500/30' },
+    { label: 'System Admin', email: 'admin@nammaoorfix.gov.in', password: 'Admin123', bg: 'bg-purple-500/20 hover:bg-purple-500/30' }
+  ];
+
+  const handleDemoClick = (email, password) => {
+    setFormData({ email, password });
+    if (error) setError('');
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (error) setError('');
@@ -110,11 +122,25 @@ export default function Login() {
             </Link>
           </p>
 
-          {/* Test Credentials Box */}
-          <div className="mt-5 pt-3 border-t border-white/10 text-xs text-white/70 bg-black/10 rounded-lg p-3 text-center space-y-1">
-            <p className="font-semibold text-yellow-200 uppercase tracking-wider text-[10px] mb-1">🔑 Demo Account</p>
-            <p className="font-mono text-white select-all">eb@nammaoorfix.gov.in</p>
-            <p className="font-mono text-white select-all">Password123</p>
+          {/* Interactive Test Credentials Box */}
+          <div className="mt-5 pt-3 border-t border-white/10 text-xs text-white/70 bg-black/20 rounded-lg p-3 space-y-2">
+            <p className="font-semibold text-yellow-200 uppercase tracking-wider text-[10px] text-center mb-1 flex items-center justify-center gap-1">
+              <span>🔑</span> Quick Demo Logins
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {demoAccounts.map((account) => (
+                <button
+                  key={account.email}
+                  type="button"
+                  onClick={() => handleDemoClick(account.email, account.password)}
+                  className={`p-2 rounded text-left border border-white/10 transition cursor-pointer text-white flex flex-col justify-between ${account.bg}`}
+                >
+                  <span className="font-semibold text-[10px] text-yellow-100">{account.label}</span>
+                  <span className="text-[9px] opacity-80 truncate">{account.email}</span>
+                </button>
+              ))}
+            </div>
+            <p className="text-[9px] text-center text-white/50 italic">Click a role card to autofill credentials</p>
           </div>
         </form>
       </div>

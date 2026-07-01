@@ -200,20 +200,9 @@ export default function NammaOorFixLayout({ isOfficialView = false }) {
           
           {/* Main Content Area */}
           <div className="flex-1">
-            {/* Location Selector */}
-            <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-              <LocationSelector 
-                onLocationSelect={(areaObj) => {
-                  setUserLocation({
-                    area: areaObj.address || '',
-                    wardNumber: areaObj.wardNumber || null,
-                    zone: areaObj.zone || null
-                  });
-                }}
-                currentLocation={userLocation}
-              />
-            </div>
+            {/* Location Selector removed as requested */}
             
+
             {/* Tab Navigation for Officials */}
             {isOfficialView && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
