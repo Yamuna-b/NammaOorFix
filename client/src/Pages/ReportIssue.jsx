@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -52,6 +52,7 @@ function LocationSelector({ setSelectedLocation }) {
 
 export default function ReportIssue() {
   const navigate = useNavigate();
+  const locationState = useLocation();
   const [formData, setFormData] = useState({
     title: '',
     category: categories[0],
@@ -66,13 +67,27 @@ export default function ReportIssue() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    if (locationState.state && locationState.state.selectedLocation) {
+      const loc = locationState.state.selectedLocation;
+      setSelectedLocation(loc);
+      if (loc.wardNumber) {
+        setFormData(prev => ({
+          ...prev,
+          wardNumber: loc.wardNumber,
+          zoneNumber: loc.zoneNumber || ''
+        }));
+      }
+    }
+  }, [locationState]);
   const [wards, setWards] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:5000/wards')
       .then(res => res.json())
       .then(data => {
-        if (data.success) {
+        if (data.status === 'success' || data.success) {
           setWards(data.data.wards);
         }
       })

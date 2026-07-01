@@ -9,7 +9,7 @@ import Settings from './Pages/Settings';
 import Navbar from './Components/Navbar';
 // Namma Oor Fix Components
 import NammaOorFixLayout from './Components/NammaOorFixLayout';
-// CiviConnect Pages
+// NammaOorFix Pages
 import ReportIssue from './Pages/ReportIssue';
 import MyIssues from './Pages/MyIssues';
 import IssueDetail from './Pages/IssueDetail';
@@ -104,7 +104,7 @@ function App() {
               element={isAuthenticated && (user?.role === 'official' || user?.role === 'admin') ? <NammaOorFixLayout isOfficialView={true} /> : <Navigate to="/login" />} 
             />
             
-            {/* CiviConnect Routes */}
+            {/* NammaOorFix Routes */}
             <Route 
               path="/report" 
               element={isAuthenticated ? <ReportIssue /> : <Navigate to="/login" />} 

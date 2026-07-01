@@ -80,7 +80,7 @@ export default function PublicFeed() {
     try {
       const response = await fetch('http://localhost:5000/wards');
       const data = await response.json();
-      if (data.success) {
+      if (data.status === 'success' || data.success) {
         setWards(data.data.wards);
       }
     } catch (err) {

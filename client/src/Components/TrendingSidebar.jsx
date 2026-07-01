@@ -1,16 +1,16 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function TrendingSidebar({ isOfficialView, trendingIssues, topIssues, urgentIssues }) {
   const [activeTab, setActiveTab] = useState('trending');
+  const navigate = useNavigate();
 
   const handleViewIssue = (issueId) => {
-    console.log('Viewing issue:', issueId);
-    // Navigate to issue detail page
+    navigate(`/issue/${issueId}`);
   };
 
   const handleTrends = () => {
-    console.log('Opening trends...');
-    // Navigate to trends page
+    navigate('/feed');
   };
 
   return (
@@ -72,7 +72,11 @@ export default function TrendingSidebar({ isOfficialView, trendingIssues, topIss
         <h3 className="font-semibold text-gray-800 mb-4">Now Trending</h3>
         <div className="space-y-3">
           {trendingIssues.slice(0, 2).map((issue, index) => (
-            <div key={issue.id} className="p-3 border-l-4 border-orange-400 bg-orange-50 rounded-r-lg">
+            <div 
+              key={issue.id} 
+              onClick={() => handleViewIssue(issue.id)}
+              className="p-3 border-l-4 border-orange-400 bg-orange-50 rounded-r-lg hover:bg-orange-100 cursor-pointer transition-colors"
+            >
               <div className="flex items-start space-x-3">
                 <span className="text-lg font-bold text-orange-600">{issue.rank}</span>
                 <div className="flex-1">
@@ -85,7 +89,11 @@ export default function TrendingSidebar({ isOfficialView, trendingIssues, topIss
           
           {/* Show more trending items */}
           {trendingIssues.slice(2, 10).map((issue, index) => (
-            <div key={issue.id} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded transition-colors">
+            <div 
+              key={issue.id} 
+              onClick={() => handleViewIssue(issue.id)}
+              className="flex items-center space-x-3 p-2 hover:bg-gray-100 cursor-pointer rounded transition-colors"
+            >
               <span className="text-sm font-medium text-gray-500">#{index + 3}</span>
               <p className="text-sm text-gray-700 truncate">{issue.title}</p>
             </div>

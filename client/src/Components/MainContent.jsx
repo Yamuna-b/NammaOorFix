@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { useNavigate } from 'react-router-dom';
+import IssueCard from './IssueCard';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -52,36 +54,10 @@ function LocationSelector({ onLocationSelect }) {
 }
 
 export default function MainContent({ issues, loading, userLocation, calculateLocationScore }) {
-  const [votes, setVotes] = useState({});
-  const [comments, setComments] = useState([
-    { id: 1, user: 'Mdu Corp', text: 'This issue will be resolved soon', votes: 4000, userVote: null }
-  ]);
-  const [newComment, setNewComment] = useState('');
+  const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [addressInput, setAddressInput] = useState('');
   const [showAddressForm, setShowAddressForm] = useState(false);
-
-  const handleVote = (commentId, voteType) => {
-    setVotes(prev => ({
-      ...prev,
-      [commentId]: voteType
-    }));
-  };
-
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (newComment.trim()) {
-      const comment = {
-        id: Date.now(),
-        user: 'Current User',
-        text: newComment.trim(),
-        votes: 0,
-        userVote: null
-      };
-      setComments(prev => [...prev, comment]);
-      setNewComment('');
-    }
-  };
 
   const handleAddressSearch = async () => {
     if (!addressInput.trim()) return;
@@ -103,11 +79,6 @@ export default function MainContent({ issues, loading, userLocation, calculateLo
     } catch (error) {
       console.error('Error searching address:', error);
     }
-  };
-
-  const formatVotes = (count) => {
-    if (count >= 1000) return `${(count / 1000).toFixed(1)}k`;
-    return count.toString();
   };
 
   if (loading) {
@@ -219,7 +190,8 @@ export default function MainContent({ issues, loading, userLocation, calculateLo
               
               <button
                 disabled={!selectedLocation}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+                onClick={() => navigate('/report', { state: { selectedLocation } })}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition-colors"
               >
                 Use This Location
               </button>
@@ -228,151 +200,24 @@ export default function MainContent({ issues, loading, userLocation, calculateLo
         </div>
       </div>
 
-      {/* Main Issue Post by Bamu */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-start space-x-3 mb-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-semibold">
-            B
+      {/* Dynamic Issues Feed */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-bold text-gray-800 border-b pb-2 mb-4">📢 Local Issues Feed</h3>
+        {issues && issues.length > 0 ? (
+          <div className="space-y-6">
+            {issues.map((issue) => {
+              const isLocal = userLocation && calculateLocationScore ? 
+                calculateLocationScore(issue, userLocation) > 0.5 : false;
+              return (
+                <IssueCard key={issue._id} issue={issue} isLocal={isLocal} />
+              );
+            })}
           </div>
-          <div className="flex-1">
-            <div className="flex items-center space-x-2 mb-2">
-              <span className="font-semibold text-gray-800">Bamu</span>
-              <span className="text-xs text-gray-500">2 hours ago</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Issue: Water leakage</h3>
-            <p className="text-gray-600 mb-4">
-              There is a serious water leakage issue in our area. Water has been wasting for the past 3 days and no one has taken action. Please look into this matter urgently.
-            </p>
-            
-            {/* Media Section */}
-            <div className="flex space-x-2 mb-4">
-              <button className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center space-x-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span>pic</span>
-              </button>
-              <button className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center space-x-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                <span>Camera</span>
-              </button>
-            </div>
-
-            {/* Comments Section */}
-            <div className="border-t border-gray-100 pt-4">
-              <h4 className="font-medium text-gray-800 mb-3">Comments</h4>
-              
-              {comments.map(comment => (
-                <div key={comment.id} className="mb-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                      {comment.user.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <span className="font-medium text-gray-800">{comment.user}</span>
-                        <span className="text-xs text-gray-500">1 hour ago</span>
-                      </div>
-                      <p className="text-gray-700 mb-2">{comment.text}</p>
-                      
-                      {/* Voting */}
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-1">
-                          <button
-                            onClick={() => handleVote(comment.id, 'up')}
-                            className={`p-1 rounded ${votes[comment.id] === 'up' ? 'bg-green-100 text-green-600' : 'hover:bg-gray-100'}`}
-                          >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => handleVote(comment.id, 'down')}
-                            className={`p-1 rounded ${votes[comment.id] === 'down' ? 'bg-red-100 text-red-600' : 'hover:bg-gray-100'}`}
-                          >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                          <span className="text-sm text-gray-600 font-medium">
-                            {formatVotes(comment.votes + (votes[comment.id] === 'up' ? 1 : votes[comment.id] === 'down' ? -1 : 0))} Votes
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {/* Add Comment */}
-              <form onSubmit={handleCommentSubmit} className="mt-4">
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Add a comment..."
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                  >
-                    Post
-                  </button>
-                </div>
-              </form>
-            </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center text-gray-500">
+            📍 No active issues found. Pin a location on the map and click 'Use This Location' to file a report!
           </div>
-        </div>
-      </div>
-
-      {/* Eb Official Post Section */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-start space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-            EB
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center space-x-2 mb-2">
-              <span className="font-semibold text-gray-800">Eb official</span>
-              <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">Official</span>
-              <span className="text-xs text-gray-500">1 hour ago</span>
-            </div>
-            
-            {/* Post Issue Form */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-medium text-gray-800 mb-3">Post an Issue</h4>
-              <textarea
-                placeholder="Describe the issue..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
-                rows={3}
-              />
-              <div className="flex justify-between">
-                <div className="flex space-x-2">
-                  <button className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center space-x-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>Add Photo</span>
-                  </button>
-                  <button className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center space-x-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span>Add Location</span>
-                  </button>
-                </div>
-                <button className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
-                  Post Issue
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

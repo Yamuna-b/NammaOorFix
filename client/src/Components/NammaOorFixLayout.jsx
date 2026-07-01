@@ -108,38 +108,32 @@ export default function NammaOorFixLayout({ isOfficialView = false }) {
         setIssues(issuesWithLocation); // Main content issues
         
         // Now Trending (User View & Official View)
-        setTrendingIssues([
-          { id: 1, title: 'Water leakage', type: 'Ongoing Issue', rank: '#1' },
-          { id: 2, title: 'Critical Issue', type: 'Critical', rank: '#2' },
-          ...allIssues.slice(0, 8).map((issue, index) => ({
+        setTrendingIssues(
+          allIssues.slice(0, 10).map((issue, index) => ({
             id: issue._id,
             title: issue.title,
-            type: index % 2 === 0 ? 'Ongoing Issue' : 'Critical',
-            rank: `#${index + 3}`
+            type: issue.severity === 'red' ? 'Critical' : 'Ongoing Issue',
+            rank: `#${index + 1}`
           }))
-        ]);
+        );
         
         // Top Issues (Official View Only)
-        setTopIssues([
-          { id: 1, title: 'Street Dogs', rank: '#1' },
-          { id: 2, title: 'Sewage', rank: '#2' },
-          ...allIssues.filter(issue => issue.category === 'Public Safety').slice(0, 3).map((issue, index) => ({
+        setTopIssues(
+          allIssues.filter(issue => issue.category === 'Public Safety').slice(0, 5).map((issue, index) => ({
             id: issue._id,
             title: issue.title,
-            rank: `#${index + 3}`
+            rank: `#${index + 1}`
           }))
-        ]);
+        );
         
         // Urgent Issues (Official View Only)
-        setUrgentIssues([
-          { id: 1, title: 'Water Leak', rank: '#1' },
-          { id: 2, title: 'Emergency', rank: '#2' },
-          ...allIssues.filter(issue => issue.severity === 'red').slice(0, 3).map((issue, index) => ({
+        setUrgentIssues(
+          allIssues.filter(issue => issue.severity === 'red').slice(0, 5).map((issue, index) => ({
             id: issue._id,
             title: issue.title,
-            rank: `#${index + 3}`
+            rank: `#${index + 1}`
           }))
-        ]);
+        );
       }
     } catch (error) {
       console.error('Error fetching issues:', error);
@@ -209,7 +203,13 @@ export default function NammaOorFixLayout({ isOfficialView = false }) {
             {/* Location Selector */}
             <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
               <LocationSelector 
-                onLocationSelect={setUserLocation}
+                onLocationSelect={(areaObj) => {
+                  setUserLocation({
+                    area: areaObj.address || '',
+                    wardNumber: areaObj.wardNumber || null,
+                    zone: areaObj.zone || null
+                  });
+                }}
                 currentLocation={userLocation}
               />
             </div>

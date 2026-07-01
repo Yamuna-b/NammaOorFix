@@ -58,7 +58,7 @@ export default function AdminLogin() {
         <div>
           <div className="text-center">
             <h1 className="text-3xl font-bold text-white">Admin Portal</h1>
-            <p className="mt-2 text-white">CiviConnect Administration</p>
+            <p className="mt-2 text-white">NammaOorFix Administration</p>
           </div>
         </div>
         

@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://Swetha:Swetha2005@cluster0.gq1ro.mongodb.net/civicconnect?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://Swetha:Swetha2005@cluster0.gq1ro.mongodb.net/nammaoorfix?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -711,6 +711,63 @@ app.get('/api/complaints', async (req, res) => {
           total
         }
       }
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+// Get current user's complaints
+app.get('/api/complaints/my', protect, async (req, res) => {
+  try {
+    const { status, page = 1, limit = 10 } = req.query;
+    
+    const filter = { reportedBy: req.user.id };
+    if (status && status !== 'all') {
+      filter.status = status;
+    }
+    
+    const issues = await Issue.find(filter)
+      .populate('reportedBy', 'name username')
+      .populate('assignedOfficial', 'name username department')
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+      
+    const total = await Issue.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        issues,
+        pagination: {
+          current: parseInt(page),
+          pages: Math.ceil(total / limit),
+          total
+        }
+      }
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+// Get single complaint details
+app.get('/api/complaints/:id', async (req, res) => {
+  try {
+    const issue = await Issue.findById(req.params.id)
+      .populate('reportedBy', 'name username avatar role isVerified department')
+      .populate('assignedOfficial', 'name username department')
+      .populate('comments.user', 'name username avatar role isVerified')
+      .populate('officialReplies.user', 'name username role isVerified');
+      
+    if (!issue) {
+      return res.status(404).json({ success: false, message: 'Issue not found' });
+    }
+    
+    res.json({
+      success: true,
+      data: { issue }
     });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });

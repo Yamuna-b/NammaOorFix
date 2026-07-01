@@ -109,6 +109,13 @@ export default function Login() {
               Sign up
             </Link>
           </p>
+
+          {/* Test Credentials Box */}
+          <div className="mt-5 pt-3 border-t border-white/10 text-xs text-white/70 bg-black/10 rounded-lg p-3 text-center space-y-1">
+            <p className="font-semibold text-yellow-200 uppercase tracking-wider text-[10px] mb-1">🔑 Demo Account</p>
+            <p className="font-mono text-white select-all">eb@nammaoorfix.gov.in</p>
+            <p className="font-mono text-white select-all">Password123</p>
+          </div>
         </form>
       </div>
     </div>

@@ -67,25 +67,35 @@ export default function SuggestionsSidebar() {
           {officials.slice(0, 2).map(official => (
             <div key={official.id} className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
                   {official.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <div className="flex items-center space-x-2">
-                    <span className="font-medium text-gray-800">{official.name}</span>
+                    <span className="font-medium text-gray-800 text-sm line-clamp-1">{official.name}</span>
                     {official.verified && (
-                      <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                         <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                       </div>
                     )}
                   </div>
-                  <span className={`text-xs px-2 py-1 rounded-full ${getRoleBadge(official.role, official.verified)}`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${getRoleBadge(official.role, official.verified)}`}>
                     {getRoleText(official.role, official.verified)}
                   </span>
                 </div>
               </div>
+              <button
+                onClick={() => handleFollow(official.id)}
+                className={`px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors ${
+                  following.has(official.id)
+                    ? 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+              >
+                {following.has(official.id) ? 'Following' : '+ follow'}
+              </button>
             </div>
           ))}
         </div>

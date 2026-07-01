@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../Components/Navbar";
 import axios from "axios";
 
 export default function Profile() {
@@ -97,7 +96,6 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 via-gray-50 to-white">
-      <Navbar user={user} />
       <main className="max-w-4xl mx-auto px-6 py-10">
         <section className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Banner */}

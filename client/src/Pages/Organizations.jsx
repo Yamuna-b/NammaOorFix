@@ -119,7 +119,7 @@ export default function Organizations() {
 
           {/* Call to Action */}
           <div className="mt-12 bg-gradient-to-r from-red-500 to-yellow-400 rounded-xl p-8 text-white text-center">
-            <h2 className="text-2xl font-bold mb-4">Join the CiviConnect Network</h2>
+            <h2 className="text-2xl font-bold mb-4">Join the NammaOorFix Network</h2>
             <p className="mb-6">
               Is your organization working to improve Madurai? Join our platform to reach more volunteers and organize impactful events.
             </p>

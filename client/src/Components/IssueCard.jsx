@@ -57,8 +57,8 @@ export default function IssueCard({ issue, isLocal }) {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const updated = res.data.data;
-      setUpvotes(updated?.upvotes?.length || 0);
-      setDownvotes(updated?.downvotes?.length || 0);
+      setUpvotes(typeof updated?.upvotes === 'number' ? updated.upvotes : (updated?.upvotes?.length || 0));
+      setDownvotes(typeof updated?.downvotes === 'number' ? updated.downvotes : (updated?.downvotes?.length || 0));
     } catch (err) {
       console.error("Vote error:", err);
     }

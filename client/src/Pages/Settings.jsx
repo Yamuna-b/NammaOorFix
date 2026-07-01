@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Navbar from '../Components/Navbar';
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('profile');
@@ -29,7 +28,6 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar user={user} />
       
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Settings</h1>
@@ -162,7 +160,7 @@ export default function Settings() {
                       Allow Location Access
                     </label>
                   </div>
-                  <p className="text-sm text-gray-500 mt-1">Allow CivicConnect to access your location to suggest relevant issues near you.</p>
+                  <p className="text-sm text-gray-500 mt-1">Allow NammaOorFix to access your location to suggest relevant issues near you.</p>
                 </div>
                 
                 <div className="mt-6">

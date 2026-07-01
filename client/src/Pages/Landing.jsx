@@ -16,7 +16,7 @@ export default function Landing() {
           transition={{ duration: 0.6 }}
           className="text-3xl font-extrabold tracking-wide drop-shadow-lg"
         >
-          CivicConnect
+          NammaOorFix
         </motion.h1>
         <motion.div
           initial={{ y: -30, opacity: 0 }}

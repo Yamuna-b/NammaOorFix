@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../App';
 
 export default function Navbar({ isOfficialView = false }) {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -40,14 +40,22 @@ export default function Navbar({ isOfficialView = false }) {
             </div>
           )}
           
-          {/* User Info */}
-          <div className="flex items-center space-x-3">
+          {/* User Info & Logout */}
+          <div className="flex items-center space-x-4">
             {user && (
               <>
-                <span className="text-sm text-gray-600">{user.name}</span>
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                  {user.name.charAt(0).toUpperCase()}
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-600 font-medium">{user.name}</span>
+                  <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-sm">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
                 </div>
+                <button
+                  onClick={logout}
+                  className="px-3 py-1.5 bg-gray-50 hover:bg-red-50 hover:text-red-600 text-gray-600 rounded-lg text-sm font-medium transition-colors border border-gray-200"
+                >
+                  Logout
+                </button>
               </>
             )}
           </div>

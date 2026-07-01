@@ -8,7 +8,6 @@ import {
 } from "react-leaflet";
 import IssueForm from "../Components/IssueForm";
 import IssueFeed from "../Components/IssueFeed";
-import Navbar from "../Components/Navbar";
 import { AuthContext } from "../App";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -68,13 +67,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
-      <Navbar user={user} />
 
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="bg-gradient-to-r from-red-500 to-yellow-400 rounded-xl p-8 text-white shadow-lg mb-8">
-          <h1 className="text-4xl font-bold">🛠️ CivicConnect</h1>
+          <h1 className="text-4xl font-bold">🛠️ NammaOorFix</h1>
           <p className="mt-2 text-lg">
             Report local issues and connect with your community
           </p>
