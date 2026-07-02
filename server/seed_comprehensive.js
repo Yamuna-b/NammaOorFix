@@ -9,7 +9,7 @@ const User = require('./models/User');
 const Issue = require('./models/Issue');
 const Ward = require('./models/Ward');
 
-const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://Swetha:Swetha2005@cluster0.gq1ro.mongodb.net/nammaoorfix?retryWrites=true&w=majority';
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/nammaoorfix';
 
 async function seedDB() {
   try {

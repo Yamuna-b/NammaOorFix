@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://Swetha:Swetha2005@cluster0.gq1ro.mongodb.net/nammaoorfix?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/nammaoorfix', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
