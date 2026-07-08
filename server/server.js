@@ -8,11 +8,14 @@ const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
+const isProduction = process.env.NODE_ENV === 'production';
+const clientDir = isProduction
+  ? path.join(__dirname, '../client/dist')
+  : path.join(__dirname, '../client');
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../client/')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/nammaoorfix', {
@@ -809,6 +812,20 @@ app.post('/api/complaints/:id/comments', protect, async (req, res) => {
     res.status(400).json({ success: false, message: error.message });
   }
 });
+
+if (isProduction) {
+  app.use(express.static(clientDir));
+  app.get('/{*splat}', (req, res, next) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      return next();
+    }
+    res.sendFile(path.join(clientDir, 'index.html'), (err) => {
+      if (err) next(err);
+    });
+  });
+} else {
+  app.use(express.static(clientDir));
+}
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

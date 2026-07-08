@@ -4,11 +4,17 @@ import './index.css'
 import App from './App.jsx'
 import axios from 'axios';
 
-// Override global fetch to automatically rewrite local backend URL to VITE_API_URL in production
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (import.meta.env.DEV) return 'http://localhost:5000';
+  return window.location.origin;
+};
+
+// Override global fetch to automatically rewrite local backend URL in production
 const originalFetch = window.fetch;
 window.fetch = function (input, init) {
   let url = input;
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const baseUrl = getApiBaseUrl();
   
   if (typeof input === 'string' && input.startsWith('http://localhost:5000')) {
     url = input.replace('http://localhost:5000', baseUrl);
@@ -22,9 +28,9 @@ window.fetch = function (input, init) {
   return originalFetch(url, init);
 };
 
-// Configure Axios request interceptor to rewrite local backend URL to VITE_API_URL in production
+// Configure Axios request interceptor to rewrite local backend URL in production
 axios.interceptors.request.use((config) => {
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const baseUrl = getApiBaseUrl();
   if (config.url && config.url.startsWith('http://localhost:5000')) {
     config.url = config.url.replace('http://localhost:5000', baseUrl);
   }

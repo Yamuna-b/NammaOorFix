@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "provider": "node",
+  "packages": {
+    "node": "22"
+  },
+  "steps": {
+    "build": {
+      "commands": [
+        "npm install --prefix server",
+        "npm install --prefix client",
+        "npm run build --prefix client"
+      ]
+    }
+  },
+  "deploy": {
+    "startCommand": "node server/server.js",
+    "variables": {
+      "NODE_ENV": "production"
+    }
+  }
+}
